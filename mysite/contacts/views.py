@@ -1,8 +1,8 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import NameForm
+from .forms import ContactsForm, NameForm
 
 
 def get_name(request):
@@ -21,4 +21,17 @@ def get_name(request):
 
 
 def thanks(request, name):
-    return render(request, "contacts/thanks.html", {"name": name})
+    return HttpResponse(f"Thanks for submitting your name, {name}!")
+
+
+def create(request):
+    if request.method == "POST":
+        form = ContactsForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data["subject"]
+            form.save()
+            return HttpResponseRedirect(reverse("contacts:thanks", args=(name,)))
+            
+    else:
+        form = ContactsForm()
+    return render(request, "contacts/create.html", {"form": form})

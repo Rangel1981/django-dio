@@ -1,5 +1,11 @@
 from django import forms
-
+from contacts.models import Contact
 
 class NameForm(forms.Form):
     your_name = forms.CharField(label="Seu nome", max_length=100)
+
+
+class ContactsForm(forms.ModelForm):
+    class Meta:
+        model = Contact
+        fields = "__all__"
